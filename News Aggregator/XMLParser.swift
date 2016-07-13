@@ -67,7 +67,6 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         foundCharacter = foundCharacter.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if (!foundCharacter.isEmpty) && (currentElement == "title" || currentElement == "link" || currentElement == "pubDate")  {
-            print(foundCharacter)
             currentDataDictionary[currentElement] = foundCharacter
             foundCharacter = ""
             if currentDataDictionary.count == 3 {

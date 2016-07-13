@@ -50,7 +50,7 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
         let articleLink = dictionary["link"]
         let articleViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewControllerWithIdentifier("idArticleViewController") as! ArticleViewController
         articleViewController.articleURL = NSURL(string: articleLink!)
-        showViewController(articleViewController, sender: self)
+        showDetailViewController(articleViewController, sender: self)
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
