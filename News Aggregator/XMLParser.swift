@@ -23,7 +23,7 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     
     var delegate : XMLParserDelegate?
     
-    var regex = try! NSRegularExpression(pattern: "<.*>", options: [.CaseInsensitive])
+    var regex = try! NSRegularExpression(pattern: "<(.*)>", options: [.CaseInsensitive])
     
     func startParsingContents(rssURL: NSURL) {
         let parser = NSXMLParser(contentsOfURL: rssURL)
@@ -68,7 +68,23 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             if currentElement == "description" || currentElement == "content" {
                 foundCharacter += string
                 currentElement = "description"
-//                regex.firstMatchInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count)))
+                let newLine = try! NSRegularExpression(pattern: "\\n*", options: [.CaseInsensitive])
+                foundCharacter = newLine.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
+//                print("content", foundCharacter)
+                let image = try! NSRegularExpression(pattern: "<img(.*)>", options: [.CaseInsensitive])
+                let result = image.firstMatchInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count))
+                if (result != nil) {
+                    let nssfoundCharacter = foundCharacter as NSString
+                    let imageURL = result.map({nssfoundCharacter.substringWithRange($0.range)})
+                    let src = try! NSRegularExpression(pattern: "src=\"(.*)\"", options: [.CaseInsensitive])
+                    let srcResult = src.firstMatchInString(imageURL!, options: [], range: NSMakeRange(0, imageURL!.characters.count))
+                    let nsimageURL = imageURL! as NSString
+                    var imageSRC = srcResult.map({nsimageURL.substringWithRange($0.range)})
+                    imageSRC = imageSRC?.substringFromIndex(imageSRC!.startIndex.advancedBy(5))
+                    imageSRC = imageSRC?.substringToIndex(imageSRC!.endIndex.advancedBy(-1))
+                    currentDataDictionary["media:content"] = imageSRC
+                    print(imageSRC)
+                }
                 foundCharacter = regex.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
             }
         }

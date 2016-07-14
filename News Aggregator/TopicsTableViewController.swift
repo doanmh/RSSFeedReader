@@ -15,7 +15,7 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = NSURL(string: "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
+        let url = NSURL(string: "https://www.theguardian.com/world/rss")
         xmlParser = XMLParser()
         xmlParser.delegate = self
         xmlParser.startParsingContents(url!)
@@ -48,7 +48,6 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
         attributedString.appendAttributedString(newLine)
         attributedString.appendAttributedString(articleDescription)
         cell.titleLabel.attributedText = attributedString
-//        cell.descriptionLabel.text = currentDictionary["description"]
         let url = NSURL(string: currentDictionary["media:content"]!)
         let imageData = NSData(contentsOfURL: url!)
         cell.iconImage.image = UIImage(data: imageData!)
