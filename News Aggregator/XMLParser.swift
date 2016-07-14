@@ -23,6 +23,7 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     
     var delegate : XMLParserDelegate?
     
+    var regex = try! NSRegularExpression(pattern: "<.*>", options: [.CaseInsensitive])
     
     func startParsingContents(rssURL: NSURL) {
         let parser = NSXMLParser(contentsOfURL: rssURL)
@@ -37,6 +38,9 @@ class XMLParser: NSObject, NSXMLParserDelegate {
         }
         if (elementName == "item") {
             articleFound = true
+        }
+        if elementName == "media:content" && articleFound {
+            foundCharacter += attributeDict["url"]!
         }
         currentElement = elementName
     }
@@ -61,15 +65,21 @@ class XMLParser: NSObject, NSXMLParserDelegate {
                     foundCharacter += string
                 }
             }
+            if currentElement == "description" || currentElement == "content" {
+                foundCharacter += string
+                currentElement = "description"
+//                regex.firstMatchInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count)))
+                foundCharacter = regex.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
+            }
         }
     }
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         foundCharacter = foundCharacter.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        if (!foundCharacter.isEmpty) && (currentElement == "title" || currentElement == "link" || currentElement == "pubDate")  {
+        if (!foundCharacter.isEmpty) && (currentElement == "title" || currentElement == "link" || currentElement == "pubDate" || currentElement == "description" || currentElement == "media:content")  {
             currentDataDictionary[currentElement] = foundCharacter
             foundCharacter = ""
-            if currentDataDictionary.count == 3 {
+            if currentDataDictionary.count == 5 {
                 arrParseData.append(currentDataDictionary)
                 currentDataDictionary.removeAll()
                 articleFound = false

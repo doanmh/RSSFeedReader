@@ -18,12 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="No article was selected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3e1-da-OI6">
-                                <rect key="frame" x="175" y="287" width="250" height="25"/>
-                                <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="16"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <webView contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jni-OS-0Rq">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
@@ -51,8 +45,6 @@
                             <constraint firstItem="ASi-p9-yxL" firstAttribute="top" secondItem="Jni-OS-0Rq" secondAttribute="bottom" id="7UW-h5-395"/>
                             <constraint firstItem="ASi-p9-yxL" firstAttribute="top" secondItem="Jni-OS-0Rq" secondAttribute="bottom" id="Ex1-Vh-Cvt"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ASi-p9-yxL" secondAttribute="trailing" constant="-20" id="MYJ-Tn-Oho"/>
-                            <constraint firstItem="3e1-da-OI6" firstAttribute="centerX" secondItem="iWb-xa-J19" secondAttribute="centerX" id="N1y-my-WaM"/>
-                            <constraint firstItem="3e1-da-OI6" firstAttribute="centerY" secondItem="iWb-xa-J19" secondAttribute="centerY" id="S2X-KZ-uSJ"/>
                             <constraint firstItem="vm4-ej-tHm" firstAttribute="top" secondItem="ASi-p9-yxL" secondAttribute="bottom" id="Vq4-ti-uIC"/>
                             <constraint firstItem="Jni-OS-0Rq" firstAttribute="top" secondItem="iWb-xa-J19" secondAttribute="topMargin" id="ekD-Vl-u6z"/>
                             <constraint firstItem="Jni-OS-0Rq" firstAttribute="leading" secondItem="iWb-xa-J19" secondAttribute="leadingMargin" constant="-20" id="tYb-nK-h7W"/>
@@ -77,22 +69,38 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="idCell" textLabel="bEi-qz-Z6f" rowHeight="80" style="IBUITableViewCellStyleDefault" id="a2K-wt-bSH">
-                                <rect key="frame" x="0.0" y="92" width="600" height="80"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="idCell" rowHeight="110" id="a2K-wt-bSH" customClass="SummaryTableViewCell" customModule="News_Aggregator" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="92" width="600" height="110"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="a2K-wt-bSH" id="9mZ-t2-qop">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="79"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="109"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bEi-qz-Z6f">
-                                            <rect key="frame" x="15" y="0.0" width="570" height="79"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" name="Helvetica" family="Helvetica" pointSize="14"/>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cB3-LO-XkJ">
+                                            <rect key="frame" x="8" y="5" width="100" height="100"/>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="" lineBreakMode="tailTruncation" numberOfLines="6" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Cav-yM-YWj">
+                                            <rect key="frame" x="116" y="5" width="476" height="100"/>
+                                            <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="12"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="cB3-LO-XkJ" firstAttribute="bottom" secondItem="9mZ-t2-qop" secondAttribute="bottomMargin" constant="-8" id="4Cw-tm-sC0"/>
+                                        <constraint firstItem="Cav-yM-YWj" firstAttribute="top" secondItem="9mZ-t2-qop" secondAttribute="topMargin" id="7kb-Dv-mmK"/>
+                                        <constraint firstItem="Cav-yM-YWj" firstAttribute="bottom" secondItem="9mZ-t2-qop" secondAttribute="bottomMargin" id="SKA-yb-wRV"/>
+                                        <constraint firstItem="cB3-LO-XkJ" firstAttribute="top" secondItem="9mZ-t2-qop" secondAttribute="topMargin" constant="8" id="UPe-dS-1eV"/>
+                                        <constraint firstItem="cB3-LO-XkJ" firstAttribute="leading" secondItem="9mZ-t2-qop" secondAttribute="leadingMargin" id="gPa-nn-w1A"/>
+                                        <constraint firstItem="Cav-yM-YWj" firstAttribute="leading" secondItem="9mZ-t2-qop" secondAttribute="leadingMargin" constant="108" id="nMS-g1-3K6"/>
+                                        <constraint firstItem="Cav-yM-YWj" firstAttribute="leading" secondItem="cB3-LO-XkJ" secondAttribute="trailing" constant="8" id="qJG-9B-gyv"/>
+                                        <constraint firstItem="Cav-yM-YWj" firstAttribute="trailing" secondItem="9mZ-t2-qop" secondAttribute="trailingMargin" id="xCK-KB-o7y"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="iconImage" destination="cB3-LO-XkJ" id="w1K-hB-Wpw"/>
+                                    <outlet property="titleLabel" destination="Cav-yM-YWj" id="kfO-pZ-D7I"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>

@@ -15,7 +15,7 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = NSURL(string: "http://vnexpress.net/rss/tin-moi-nhat.rss")
+        let url = NSURL(string: "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml")
         xmlParser = XMLParser()
         xmlParser.delegate = self
         xmlParser.startParsingContents(url!)
@@ -39,9 +39,19 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("idCell", forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("idCell", forIndexPath: indexPath) as! SummaryTableViewCell
         let currentDictionary = xmlParser.arrParseData[indexPath.row] as Dictionary<String, String>
-        cell.textLabel?.text = currentDictionary["title"]
+        let articleTitle = NSMutableAttributedString(string: currentDictionary["title"]!, attributes: [NSFontAttributeName : UIFont.boldSystemFontOfSize(15)])
+        let articleDescription = NSMutableAttributedString(string: currentDictionary["description"]!, attributes: [NSFontAttributeName : UIFont.systemFontOfSize(13)])
+        let attributedString = NSMutableAttributedString(attributedString: articleTitle)
+        let newLine = NSMutableAttributedString(string: "\n\n")
+        attributedString.appendAttributedString(newLine)
+        attributedString.appendAttributedString(articleDescription)
+        cell.titleLabel.attributedText = attributedString
+//        cell.descriptionLabel.text = currentDictionary["description"]
+        let url = NSURL(string: currentDictionary["media:content"]!)
+        let imageData = NSData(contentsOfURL: url!)
+        cell.iconImage.image = UIImage(data: imageData!)
         return cell
     }
     
@@ -54,7 +64,7 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 80
+        return 140
     }
     /*
     // Override to support conditional editing of the table view.
