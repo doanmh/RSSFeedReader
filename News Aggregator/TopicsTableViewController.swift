@@ -7,23 +7,50 @@
 //
 
 import UIKit
+import CoreData
 
 class TopicsTableViewController: UITableViewController, XMLParserDelegate {
 
     @IBOutlet weak var navigator: UINavigationItem!
     
     var xmlParser : XMLParser!
-    let url = NSURL(string: "https://tinhte.vn/rss")
+    var rssLinksArray = [NSManagedObject]()
+    var url : NSURL? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        
+        let fetchRequest = NSFetchRequest(entityName: "RSSLinks")
+        
+        do {
+            let results = try managedContext.executeFetchRequest(fetchRequest)
+            rssLinksArray = results as! [NSManagedObject]
+            print(rssLinksArray[0].valueForKey("name"))
+        } catch let error as NSError {
+            print("Could not load \(error), \(error.userInfo)")
+        }
+        
         xmlParser = XMLParser()
         xmlParser.delegate = self
+        print(rssLinksArray.count)
+        if !rssLinksArray.isEmpty {
+            let stringURL = rssLinksArray[0].valueForKey("url") as! String
+            url = NSURL(string: stringURL)
+        } else {
+            url = NSURL(string: "http://www.theverge.com/rss/index.xml")
+        }
         xmlParser.startParsingContents(url!)
         self.refreshControl?.addTarget(self, action: #selector(TopicsTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
-        navigator.title = xmlParser.publisher
+        navigator.title = rssLinksArray[0].valueForKey("name") as! String
     }
+    
+//    override func viewWillAppear(animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//            }
     
     func refresh(refreshControl: UIRefreshControl) {
         xmlParser.startParsingContents(url!)
@@ -31,6 +58,39 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
         refreshControl.endRefreshing()
     }
 
+    @IBAction func addLink(sender: AnyObject) {
+        let alert = UIAlertController(title: "Add RSS Feed", message: "Give it a name and a RSS Feed Link", preferredStyle: .Alert)
+        let saveAction = UIAlertAction(title: "Save", style: .Default, handler: {(action:UIAlertAction) -> Void in
+            let nameField = alert.textFields![0]
+            let linkField = alert.textFields![1]
+            self.saveAction(nameField.text!, link: linkField.text!)
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: {(action:UIAlertAction) -> Void in})
+        alert.addTextFieldWithConfigurationHandler({(nameField : UITextField) -> Void in})
+        alert.addTextFieldWithConfigurationHandler({(linkField : UITextField) -> Void in})
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
+        presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func saveAction(name: String, link: String) {
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        let managedContext = appDelegate.managedObjectContext
+        
+        let entity = NSEntityDescription.entityForName("RSSLinks", inManagedObjectContext: managedContext)
+        let rssLink = NSManagedObject(entity: entity!, insertIntoManagedObjectContext: managedContext)
+        
+        rssLink.setValue(name, forKey: "name")
+        rssLink.setValue(link, forKey: "url")
+        
+        do {
+            try managedContext.save()
+            rssLinksArray.append(rssLink)
+        } catch let error as NSError {
+            print("Could not save \(error), \(error.userInfo)")
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -64,6 +124,8 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
             if imageData != nil {
                 cell.iconImage.image = UIImage(data: imageData!)
             }
+        } else {
+            cell.iconImage.image = UIImage(named: "Image")
         }
         return cell
     }

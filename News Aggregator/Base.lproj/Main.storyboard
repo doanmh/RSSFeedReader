@@ -108,7 +108,13 @@
                             <outlet property="delegate" destination="t5h-2g-Mdd" id="XZS-sz-5mx"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="1VU-gk-U5s"/>
+                    <navigationItem key="navigationItem" id="1VU-gk-U5s">
+                        <barButtonItem key="leftBarButtonItem" systemItem="add" id="UqC-bK-qoi">
+                            <connections>
+                                <action selector="addLink:" destination="t5h-2g-Mdd" id="7ED-Uf-3eb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="wUf-ON-u6f">
                         <autoresizingMask key="autoresizingMask"/>
                         <attributedString key="attributedTitle">

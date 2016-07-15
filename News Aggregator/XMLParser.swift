@@ -89,6 +89,7 @@ class XMLParser: NSObject, NSXMLParserDelegate {
                 let image = try! NSRegularExpression(pattern: "<img(.*)>", options: [.CaseInsensitive])
                 let result = image.firstMatchInString(imageCharacter, options: [.ReportCompletion], range: NSMakeRange(0, imageCharacter.characters.count))
                 if (result != nil) {
+                    print("yest")
                     let nssfoundCharacter = imageCharacter as NSString
                     let imageURL = result.map({nssfoundCharacter.substringWithRange($0.range)})
                     let src = try! NSRegularExpression(pattern: "src=\"([^\\s])*", options: [.CaseInsensitive])
@@ -105,12 +106,13 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         foundCharacter = foundCharacter.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        if currentElement == "title" || currentElement == "link" || currentElement == "pubDate" || currentElement == "description" || currentElement == "media:content"  {
+        if (!foundCharacter.isEmpty) && (currentElement == "title" || currentElement == "link" || currentElement == "pubDate" || currentElement == "description" || currentElement == "media:content")  {
             currentDataDictionary[currentElement] = foundCharacter
             foundCharacter = ""
         }
         if elementName == "item" || elementName == "entry" {
             arrParseData.append(currentDataDictionary)
+            print(currentDataDictionary)
             currentDataDictionary.removeAll()
             articleFound = false
         }
