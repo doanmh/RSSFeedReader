@@ -41,6 +41,8 @@ class XMLParser: NSObject, NSXMLParserDelegate {
         }
         if elementName == "media:content" && articleFound {
             foundCharacter += attributeDict["url"]!
+            currentDataDictionary["media:content"] = foundCharacter
+            foundCharacter = ""
         }
         currentElement = elementName
     }
@@ -67,39 +69,40 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             }
             if currentElement == "description" || currentElement == "content" {
                 foundCharacter += string
+                let imageCharacter = foundCharacter
                 currentElement = "description"
+                
                 let newLine = try! NSRegularExpression(pattern: "\\n*", options: [.CaseInsensitive])
                 foundCharacter = newLine.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
-//                print("content", foundCharacter)
+                foundCharacter = regex.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
+                
                 let image = try! NSRegularExpression(pattern: "<img(.*)>", options: [.CaseInsensitive])
-                let result = image.firstMatchInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count))
+                let result = image.firstMatchInString(imageCharacter, options: [.ReportCompletion], range: NSMakeRange(0, imageCharacter.characters.count))
                 if (result != nil) {
-                    let nssfoundCharacter = foundCharacter as NSString
+                    let nssfoundCharacter = imageCharacter as NSString
                     let imageURL = result.map({nssfoundCharacter.substringWithRange($0.range)})
-                    let src = try! NSRegularExpression(pattern: "src=\"(.*)\"", options: [.CaseInsensitive])
+                    let src = try! NSRegularExpression(pattern: "src=\"([^\\s])*", options: [.CaseInsensitive])
                     let srcResult = src.firstMatchInString(imageURL!, options: [], range: NSMakeRange(0, imageURL!.characters.count))
                     let nsimageURL = imageURL! as NSString
                     var imageSRC = srcResult.map({nsimageURL.substringWithRange($0.range)})
                     imageSRC = imageSRC?.substringFromIndex(imageSRC!.startIndex.advancedBy(5))
                     imageSRC = imageSRC?.substringToIndex(imageSRC!.endIndex.advancedBy(-1))
                     currentDataDictionary["media:content"] = imageSRC
-                    print(imageSRC)
                 }
-                foundCharacter = regex.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
             }
         }
     }
     
     func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         foundCharacter = foundCharacter.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        if (!foundCharacter.isEmpty) && (currentElement == "title" || currentElement == "link" || currentElement == "pubDate" || currentElement == "description" || currentElement == "media:content")  {
+        if currentElement == "title" || currentElement == "link" || currentElement == "pubDate" || currentElement == "description" || currentElement == "media:content"  {
             currentDataDictionary[currentElement] = foundCharacter
             foundCharacter = ""
-            if currentDataDictionary.count == 5 {
-                arrParseData.append(currentDataDictionary)
-                currentDataDictionary.removeAll()
-                articleFound = false
-            }
+        }
+        if elementName == "item" || elementName == "entry" {
+            arrParseData.append(currentDataDictionary)
+            currentDataDictionary.removeAll()
+            articleFound = false
         }
     }
     

@@ -11,14 +11,22 @@ import UIKit
 class TopicsTableViewController: UITableViewController, XMLParserDelegate {
 
     var xmlParser : XMLParser!
+    let url = NSURL(string: "http://www.theverge.com/rss/index.xml")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = NSURL(string: "https://www.theguardian.com/world/rss")
         xmlParser = XMLParser()
         xmlParser.delegate = self
         xmlParser.startParsingContents(url!)
+        self.refreshControl?.addTarget(self, action: #selector(TopicsTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+        
+    }
+    
+    func refresh(refreshControl: UIRefreshControl) {
+        xmlParser.startParsingContents(url!)
+        self.tableView.reloadData()
+        refreshControl.endRefreshing()
     }
 
     override func didReceiveMemoryWarning() {
@@ -48,9 +56,13 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
         attributedString.appendAttributedString(newLine)
         attributedString.appendAttributedString(articleDescription)
         cell.titleLabel.attributedText = attributedString
-        let url = NSURL(string: currentDictionary["media:content"]!)
-        let imageData = NSData(contentsOfURL: url!)
-        cell.iconImage.image = UIImage(data: imageData!)
+        if currentDictionary["media:content"] != nil {
+            let url = NSURL(string: currentDictionary["media:content"]!)
+            let imageData = NSData(contentsOfURL: url!)
+            if imageData != nil {
+                cell.iconImage.image = UIImage(data: imageData!)
+            }
+        }
         return cell
     }
     
