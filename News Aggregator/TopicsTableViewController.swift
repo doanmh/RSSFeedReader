@@ -10,8 +10,10 @@ import UIKit
 
 class TopicsTableViewController: UITableViewController, XMLParserDelegate {
 
+    @IBOutlet weak var navigator: UINavigationItem!
+    
     var xmlParser : XMLParser!
-    let url = NSURL(string: "http://www.theverge.com/rss/index.xml")
+    let url = NSURL(string: "https://tinhte.vn/rss")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +22,7 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
         xmlParser.delegate = self
         xmlParser.startParsingContents(url!)
         self.refreshControl?.addTarget(self, action: #selector(TopicsTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
-        
+        navigator.title = xmlParser.publisher
     }
     
     func refresh(refreshControl: UIRefreshControl) {

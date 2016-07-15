@@ -20,13 +20,14 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     var foundCharacter = ""
     var articleFound = false
     var isAtom = false
+    var foundPublisher = false
+    var publisher = ""
     
     var delegate : XMLParserDelegate?
     
-    var regex = try! NSRegularExpression(pattern: "<(.*)>", options: [.CaseInsensitive])
-    
     func startParsingContents(rssURL: NSURL) {
         let parser = NSXMLParser(contentsOfURL: rssURL)
+        arrParseData.removeAll()
         parser?.delegate = self
         parser?.parse()
     }
@@ -40,14 +41,21 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             articleFound = true
         }
         if elementName == "media:content" && articleFound {
-            foundCharacter += attributeDict["url"]!
-            currentDataDictionary["media:content"] = foundCharacter
-            foundCharacter = ""
+            var imgURL = attributeDict["url"]
+            imgURL = imgURL!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            currentDataDictionary["media:content"] = imgURL
+            print(imgURL)
         }
         currentElement = elementName
     }
     
     func parser(parser: NSXMLParser, foundCharacters string: String) {
+        if currentElement == "title" {
+            if !foundPublisher {
+                publisher = string
+                foundPublisher = true
+            }
+        }
         if articleFound {
             if (isAtom) {
                 if currentElement == "title" {
@@ -69,10 +77,12 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             }
             if currentElement == "description" || currentElement == "content" {
                 foundCharacter += string
-                let imageCharacter = foundCharacter
                 currentElement = "description"
                 
                 let newLine = try! NSRegularExpression(pattern: "\\n*", options: [.CaseInsensitive])
+                let imageCharacter = foundCharacter
+                let regex = try! NSRegularExpression(pattern: "(<([^>]+)>)", options: [.CaseInsensitive])
+                
                 foundCharacter = newLine.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
                 foundCharacter = regex.stringByReplacingMatchesInString(foundCharacter, options: [.ReportCompletion], range: NSMakeRange(0, foundCharacter.characters.count), withTemplate: "")
                 
