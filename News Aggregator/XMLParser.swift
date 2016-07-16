@@ -110,7 +110,9 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             foundCharacter = ""
         }
         if elementName == "item" || elementName == "entry" {
-            arrParseData.append(currentDataDictionary)
+            if currentDataDictionary["link"] != nil {
+                arrParseData.append(currentDataDictionary)
+            }
             print(currentDataDictionary)
             currentDataDictionary.removeAll()
             articleFound = false

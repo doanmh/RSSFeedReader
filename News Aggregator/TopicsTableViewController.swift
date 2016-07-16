@@ -85,25 +85,55 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate, Chang
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("idCell", forIndexPath: indexPath) as! SummaryTableViewCell
+        
         let currentDictionary = xmlParser.arrParseData[indexPath.row] as Dictionary<String, String>
-        let articleTitle = NSMutableAttributedString(string: currentDictionary["title"]!, attributes: [NSFontAttributeName : UIFont.boldSystemFontOfSize(15)])
-        let articleDescription = NSMutableAttributedString(string: currentDictionary["description"]!, attributes: [NSFontAttributeName : UIFont.systemFontOfSize(13)])
-        let attributedString = NSMutableAttributedString(attributedString: articleTitle)
-        let newLine = NSMutableAttributedString(string: "\n\n")
-        attributedString.appendAttributedString(newLine)
-        attributedString.appendAttributedString(articleDescription)
-        cell.titleLabel.attributedText = attributedString
-        if currentDictionary["media:content"] != nil {
-            let url = NSURL(string: currentDictionary["media:content"]!)
-            let imageData = NSData(contentsOfURL: url!)
-            if imageData != nil {
-                cell.iconImage.image = UIImage(data: imageData!)
-            }
-        } else {
-            cell.iconImage.image = UIImage(named: "Image")
+        var articleTitle : NSMutableAttributedString!
+        var articleDescription : NSMutableAttributedString!
+        var attributedString : NSMutableAttributedString!
+        if (currentDictionary["title"] != nil) {
+            articleTitle = NSMutableAttributedString(string: currentDictionary["title"]!, attributes: [NSFontAttributeName : UIFont.boldSystemFontOfSize(15)])
+            attributedString = articleTitle
         }
-        return cell
+        if currentDictionary["description"] != nil {
+            articleDescription = NSMutableAttributedString(string: currentDictionary["description"]!, attributes: [NSFontAttributeName : UIFont.systemFontOfSize(13)])
+            attributedString = articleDescription
+        }
+        
+        let newLine = NSMutableAttributedString(string: "\n\n")
+        
+        if articleTitle != nil && articleDescription != nil {
+            attributedString = NSMutableAttributedString(attributedString: articleTitle)
+            attributedString.appendAttributedString(newLine)
+            attributedString.appendAttributedString(articleDescription)
+        } else if articleTitle == nil && articleDescription == nil{
+            attributedString = NSMutableAttributedString(string: currentDictionary["link"]!, attributes: [NSFontAttributeName : UIFont.systemFontOfSize(13)])
+        }
+        
+        if currentDictionary["media:content"] != nil {
+            let cell = tableView.dequeueReusableCellWithIdentifier("idCell", forIndexPath: indexPath) as! SummaryTableViewCell
+            let url = NSURL(string: currentDictionary["media:content"]!)
+//            let imageData = NSData(contentsOfURL: url!)
+//            if imageData != nil {
+//                cell.iconImage.image = UIImage(data: imageData!)
+//            }
+            
+            NSURLSession.sharedSession().dataTaskWithURL(url!, completionHandler: {(data, _, error) -> Void in
+                guard let data = data where error == nil else {
+                    return
+                }
+                dispatch_async(dispatch_get_main_queue()) {
+                    cell.iconImage.image = UIImage(data: data)
+                    cell.layoutSubviews()
+                }
+            }).resume()
+            
+            cell.titleLabel.attributedText = attributedString
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCellWithIdentifier("idCellNoImage", forIndexPath: indexPath)
+            cell.textLabel?.attributedText = attributedString
+            return cell
+        }
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
