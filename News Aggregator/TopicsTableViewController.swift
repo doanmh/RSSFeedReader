@@ -40,7 +40,14 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate, Chang
         let saveAction = UIAlertAction(title: "Save", style: .Default, handler: {(action:UIAlertAction) -> Void in
             let nameField = alert.textFields![0]
             let linkField = alert.textFields![1]
-            self.saveAction(nameField.text!, link: linkField.text!)
+            if nameField.text != "" && linkField.text != "" {
+                self.saveAction(nameField.text!, link: linkField.text!)
+            } else {
+                let blankAlert = UIAlertController(title: "Warning!", message: "The name and/or link can be left blank", preferredStyle: UIAlertControllerStyle.Alert)
+                let blankAction = UIAlertAction(title: "Ok", style: UIAlertActionStyle.Cancel, handler: nil)
+                blankAlert.addAction(blankAction)
+                self.presentViewController(blankAlert, animated: true, completion: nil)
+            }
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .Default, handler: {(action:UIAlertAction) -> Void in})
         alert.addTextFieldWithConfigurationHandler({(nameField : UITextField) -> Void in})
