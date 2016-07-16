@@ -20,14 +20,17 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     var foundCharacter = ""
     var articleFound = false
     var isAtom = false
-    var foundPublisher = false
-    var publisher = ""
     
     var delegate : XMLParserDelegate?
     
     func startParsingContents(rssURL: NSURL) {
         let parser = NSXMLParser(contentsOfURL: rssURL)
         arrParseData.removeAll()
+        currentDataDictionary.removeAll()
+        currentElement = ""
+        foundCharacter = ""
+        articleFound = false
+        isAtom = false
         parser?.delegate = self
         parser?.parse()
     }
@@ -49,12 +52,6 @@ class XMLParser: NSObject, NSXMLParserDelegate {
     }
     
     func parser(parser: NSXMLParser, foundCharacters string: String) {
-        if currentElement == "title" {
-            if !foundPublisher {
-                publisher = string
-                foundPublisher = true
-            }
-        }
         if articleFound {
             if (isAtom) {
                 if currentElement == "title" {
@@ -114,6 +111,7 @@ class XMLParser: NSObject, NSXMLParserDelegate {
         }
         if elementName == "item" || elementName == "entry" {
             arrParseData.append(currentDataDictionary)
+            print(currentDataDictionary)
             currentDataDictionary.removeAll()
             articleFound = false
         }
