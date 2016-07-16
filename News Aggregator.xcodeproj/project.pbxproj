@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FE05B1461D36E2AC00FEBF71 /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE05B1451D36E2AC00FEBF71 /* SummaryTableViewCell.swift */; };
+		FE1710E51D39F0870022C02C /* RSSListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1710E41D39F0870022C02C /* RSSListTableViewController.swift */; };
 		FEE1772A1D314B87001BFA3A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEE177291D314B87001BFA3A /* AppDelegate.swift */; };
 		FEE1772F1D314B88001BFA3A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FEE1772D1D314B88001BFA3A /* Main.storyboard */; };
 		FEE177321D314B88001BFA3A /* News_Aggregator.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FEE177301D314B88001BFA3A /* News_Aggregator.xcdatamodeld */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		FE05B1451D36E2AC00FEBF71 /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
+		FE1710E41D39F0870022C02C /* RSSListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSListTableViewController.swift; sourceTree = "<group>"; };
 		FEE177261D314B87001BFA3A /* News Aggregator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "News Aggregator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEE177291D314B87001BFA3A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FEE1772E1D314B88001BFA3A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -69,6 +71,7 @@
 				FEE1773E1D3152CC001BFA3A /* TopicsTableViewController.swift */,
 				FEE177401D315315001BFA3A /* ArticleViewController.swift */,
 				FEE177421D31533C001BFA3A /* ContainerViewController.swift */,
+				FE1710E41D39F0870022C02C /* RSSListTableViewController.swift */,
 				FEE177441D31535C001BFA3A /* XMLParser.swift */,
 				FEE1772D1D314B88001BFA3A /* Main.storyboard */,
 				FEE177331D314B88001BFA3A /* Assets.xcassets */,
@@ -154,6 +157,7 @@
 				FEE1772A1D314B87001BFA3A /* AppDelegate.swift in Sources */,
 				FEE177411D315315001BFA3A /* ArticleViewController.swift in Sources */,
 				FEE177321D314B88001BFA3A /* News_Aggregator.xcdatamodeld in Sources */,
+				FE1710E51D39F0870022C02C /* RSSListTableViewController.swift in Sources */,
 				FEE177431D31533C001BFA3A /* ContainerViewController.swift in Sources */,
 				FE05B1461D36E2AC00FEBF71 /* SummaryTableViewCell.swift in Sources */,
 				FEE1773F1D3152CC001BFA3A /* TopicsTableViewController.swift in Sources */,

@@ -9,17 +9,32 @@
 import UIKit
 import CoreData
 
-class TopicsTableViewController: UITableViewController, XMLParserDelegate {
+class TopicsTableViewController: UITableViewController, XMLParserDelegate, ChangeFeedDelegate {
 
     @IBOutlet weak var navigator: UINavigationItem!
     
     var xmlParser : XMLParser!
     var rssLinksArray = [NSManagedObject]()
-    var url : NSURL? = nil
+    var url = NSURL(string: "http://www.theverge.com/rss/index.xml")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        fetchData()
+        
+        xmlParser = XMLParser()
+        xmlParser.delegate = self
+//        xmlParser.startParsingContents(url!)
+        self.refreshControl?.addTarget(self, action: #selector(TopicsTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
+//        navigator.title = rssLinksArray[0].valueForKey("name") as? String
+    }
+    
+//    override func viewWillAppear(animated: Bool) {
+//        super.viewWillAppear(animated)
+//        
+//            }
+    
+    func fetchData() {
         let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
         let managedContext = appDelegate.managedObjectContext
         
@@ -28,29 +43,10 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
         do {
             let results = try managedContext.executeFetchRequest(fetchRequest)
             rssLinksArray = results as! [NSManagedObject]
-            print(rssLinksArray[0].valueForKey("name"))
         } catch let error as NSError {
             print("Could not load \(error), \(error.userInfo)")
         }
-        
-        xmlParser = XMLParser()
-        xmlParser.delegate = self
-        print(rssLinksArray.count)
-        if !rssLinksArray.isEmpty {
-            let stringURL = rssLinksArray[0].valueForKey("url") as! String
-            url = NSURL(string: stringURL)
-        } else {
-            url = NSURL(string: "http://www.theverge.com/rss/index.xml")
-        }
-        xmlParser.startParsingContents(url!)
-        self.refreshControl?.addTarget(self, action: #selector(TopicsTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
-        navigator.title = rssLinksArray[0].valueForKey("name") as! String
     }
-    
-//    override func viewWillAppear(animated: Bool) {
-//        super.viewWillAppear(animated)
-//        
-//            }
     
     func refresh(refreshControl: UIRefreshControl) {
         xmlParser.startParsingContents(url!)
@@ -100,7 +96,7 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return xmlParser.arrParseData.count
+       return xmlParser.arrParseData.count
     }
 
     
@@ -141,49 +137,18 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate {
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 140
     }
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == .Delete {
-            // Delete the row from the data source
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "idShowRSSList" {
+            let rssListTableViewController = segue.destinationViewController as! RSSListTableViewController
+            rssListTableViewController.delegate = self
+        }
     }
-    */
-
+    
+    func didChangeFeed(newURL: NSURL, name: String) {
+        url = newURL
+        xmlParser.startParsingContents(url!)
+        navigator.title = name
+        self.tableView.reloadData()
+    }
 }
