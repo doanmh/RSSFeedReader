@@ -112,20 +112,10 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate, Chang
         if currentDictionary["media:content"] != nil {
             let cell = tableView.dequeueReusableCellWithIdentifier("idCell", forIndexPath: indexPath) as! SummaryTableViewCell
             let url = NSURL(string: currentDictionary["media:content"]!)
-//            let imageData = NSData(contentsOfURL: url!)
-//            if imageData != nil {
-//                cell.iconImage.image = UIImage(data: imageData!)
-//            }
+            let block: SDWebImageCompletionBlock! = {(image: UIImage!, error: NSError!, cacheType: SDImageCacheType!, imageURL: NSURL!) -> Void in
+            }
             
-            NSURLSession.sharedSession().dataTaskWithURL(url!, completionHandler: {(data, _, error) -> Void in
-                guard let data = data where error == nil else {
-                    return
-                }
-                dispatch_async(dispatch_get_main_queue()) {
-                    cell.iconImage.image = UIImage(data: data)
-                    cell.layoutSubviews()
-                }
-            }).resume()
+            cell.iconImage.sd_setImageWithURL(url, completed: block)
             
             cell.titleLabel.attributedText = attributedString
             return cell

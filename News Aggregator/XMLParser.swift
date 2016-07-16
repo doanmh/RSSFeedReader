@@ -113,7 +113,6 @@ class XMLParser: NSObject, NSXMLParserDelegate {
             if currentDataDictionary["link"] != nil {
                 arrParseData.append(currentDataDictionary)
             }
-            print(currentDataDictionary)
             currentDataDictionary.removeAll()
             articleFound = false
         }
