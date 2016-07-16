@@ -24,6 +24,7 @@ class RSSListTableViewController: UITableViewController {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        navigationItem.rightBarButtonItem = editButtonItem()
         fetchData()
     }
     
@@ -72,26 +73,27 @@ class RSSListTableViewController: UITableViewController {
         delegate?.didChangeFeed(url!, name : feedName)
         self.navigationController?.popViewControllerAnimated(true)
     }
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
+    
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
-            // Delete the row from the data source
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let managedContext = appDelegate.managedObjectContext
+            let feedToDelete = rssLinksArray[indexPath.row]
+            managedContext.deleteObject(feedToDelete)
+            do {
+                try managedContext.save()
+                fetchData()
+            } catch let error as NSError {
+                print("Could not load \(error), \(error.userInfo)")
+            }
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-        } else if editingStyle == .Insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+            self.tableView.reloadData()
+        }
     }
-    */
+
+    override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
 
     /*
     // Override to support rearranging the table view.

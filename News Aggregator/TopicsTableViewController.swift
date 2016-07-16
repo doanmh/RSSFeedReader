@@ -14,39 +14,20 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate, Chang
     @IBOutlet weak var navigator: UINavigationItem!
     
     var xmlParser : XMLParser!
-    var rssLinksArray = [NSManagedObject]()
-    var url = NSURL(string: "http://www.theverge.com/rss/index.xml")
+    var url : NSURL!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        fetchData()
-        
         xmlParser = XMLParser()
         xmlParser.delegate = self
-//        xmlParser.startParsingContents(url!)
         self.refreshControl?.addTarget(self, action: #selector(TopicsTableViewController.refresh(_:)), forControlEvents: UIControlEvents.ValueChanged)
-//        navigator.title = rssLinksArray[0].valueForKey("name") as? String
     }
     
 //    override func viewWillAppear(animated: Bool) {
 //        super.viewWillAppear(animated)
 //        
 //            }
-    
-    func fetchData() {
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        let managedContext = appDelegate.managedObjectContext
-        
-        let fetchRequest = NSFetchRequest(entityName: "RSSLinks")
-        
-        do {
-            let results = try managedContext.executeFetchRequest(fetchRequest)
-            rssLinksArray = results as! [NSManagedObject]
-        } catch let error as NSError {
-            print("Could not load \(error), \(error.userInfo)")
-        }
-    }
     
     func refresh(refreshControl: UIRefreshControl) {
         xmlParser.startParsingContents(url!)
@@ -81,7 +62,6 @@ class TopicsTableViewController: UITableViewController, XMLParserDelegate, Chang
         
         do {
             try managedContext.save()
-            rssLinksArray.append(rssLink)
         } catch let error as NSError {
             print("Could not save \(error), \(error.userInfo)")
         }
