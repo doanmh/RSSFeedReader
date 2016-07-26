@@ -30,9 +30,9 @@
                                 </constraints>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="VFB-Kq-XxV"/>
-                                    <barButtonItem title="Publish Date" id="Jxz-ze-Rhl">
+                                    <barButtonItem title="Copy Link" id="Jxz-ze-Rhl">
                                         <connections>
-                                            <action selector="showPublishDate:" destination="M1D-kP-6Sp" id="rNA-2k-PM3"/>
+                                            <action selector="copyLink:" destination="M1D-kP-6Sp" id="zEz-gl-mU5"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -51,7 +51,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="btnPubDate" destination="Jxz-ze-Rhl" id="j5D-Y3-vYx"/>
+                        <outlet property="btnCopyLink" destination="Jxz-ze-Rhl" id="qQW-0y-dmn"/>
                         <outlet property="toolbar" destination="ASi-p9-yxL" id="91d-KC-fbc"/>
                         <outlet property="webview" destination="Jni-OS-0Rq" id="SOb-pJ-29L"/>
                     </connections>

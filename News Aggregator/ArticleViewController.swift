@@ -12,7 +12,7 @@ class ArticleViewController: UIViewController {
     
     @IBOutlet weak var webview: UIWebView!
     @IBOutlet weak var toolbar: UIToolbar!
-    @IBOutlet weak var btnPubDate: UIBarButtonItem!
+    @IBOutlet weak var btnCopyLink: UIBarButtonItem!
     
     var articlesButtonItem : UIBarButtonItem!
     
@@ -45,7 +45,8 @@ class ArticleViewController: UIViewController {
         }
     }
 
-    @IBAction func showPublishDate(sender: AnyObject) {
+    @IBAction func copyLink(sender: AnyObject) {
+        UIPasteboard.generalPasteboard().string = articleURL.absoluteString
     }
     
     override func didReceiveMemoryWarning() {
